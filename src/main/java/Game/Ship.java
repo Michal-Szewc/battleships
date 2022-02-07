@@ -46,7 +46,7 @@ public class Ship {
     public boolean intersects(Ship other){
         if (this.lowerLeft().getX() > other.upperRight().getX() || other.lowerLeft().getX() > this.upperRight().getX())
             return false;
-        return this.lowerLeft().getY() > other.upperRight().getY() || other.lowerLeft().getY() > this.upperRight().getY();
+        return !(this.lowerLeft().getY() > other.upperRight().getY() || other.lowerLeft().getY() > this.upperRight().getY());
     }
 
     public int getLength() {
