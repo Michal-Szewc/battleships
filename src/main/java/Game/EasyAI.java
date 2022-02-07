@@ -6,14 +6,18 @@ public class EasyAI extends AI_base{
         super(gameSettings);
     }
 
-    @Override
-    public Vector2d shot() {
-        Vector2d position = viablePositions.get(random.nextInt(viablePositions.size()));
-        return position;
-    }
+    //shoots at random viable position, unless it is tracking shot ship
 
     @Override
-    public void hit(Vector2d position, Tile tile) {
+    public Vector2d shot() {
+        Vector2d position;
+        if(tracking) {
+            position = trackedShot();
+            if (position != null)
+                return position;
+        }
+        position = viablePositions.get(random.nextInt(viablePositions.size()));
         viablePositions.remove(position);
+        return position;
     }
 }

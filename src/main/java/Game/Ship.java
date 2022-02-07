@@ -41,21 +41,25 @@ public class Ship {
         return position.follows(lowerLeft()) && position.proceeds(upperRight());
     }
 
+    //returns true if this ship intersects with the other one.
+
     public boolean intersects(Ship other){
         if (this.lowerLeft().getX() > other.upperRight().getX() || other.lowerLeft().getX() > this.upperRight().getX())
             return false;
-        if (this.lowerLeft().getY() > other.upperRight().getY() || other.lowerLeft().getY() > this.upperRight().getY())
-            return false;
-        return true;
+        return this.lowerLeft().getY() > other.upperRight().getY() || other.lowerLeft().getY() > this.upperRight().getY();
     }
 
     public int getLength() {
         return length;
     }
 
+    //returns true if it has been hit maximal amount of times
+
     public boolean wrecked(){
         return hits == length;
     }
+
+    //updates hit count and updates board if ship was destroyed
 
     public void hit(){
         hits += 1;

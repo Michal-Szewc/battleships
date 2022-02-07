@@ -2,7 +2,6 @@ package Game;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Board {
     List<Ship> ships = new ArrayList<>();
@@ -10,6 +9,8 @@ public class Board {
     Vector2d upperRight;
 
     Tile[][] boardState;
+
+    //returns true if the position is in bounds of board
 
     public boolean inbounds(Vector2d position){
         return position.follows(lowerLeft) && position.proceeds(upperRight);
@@ -25,23 +26,7 @@ public class Board {
         }
     }
 
-    public Board(){
-        Random r = new Random();
-        boardState = new Tile[10][10];
-        upperRight = new Vector2d(9,9);
-        for(int x = 0; x < 10; x++){
-            for(int y = 0; y < 10; y++){
-                boardState[x][y] = switch(r.nextInt(5)){
-                    case 0 -> Tile.EMPTY;
-                    case 1 -> Tile.HIDDEN;
-                    case 2 -> Tile.SHIP;
-                    case 3 -> Tile.SHIPWRECK;
-                    case 4 -> Tile.SHOT_SHIP;
-                    default -> Tile.HIDDEN;
-                };
-            }
-        }
-    }
+    //returns true if the ship placement is valiable - in bounds and not intersection with other ships.
 
     public boolean valiable(Ship ship){
         if (inbounds(ship.getPosition()) && inbounds(ship.getEnd())){
@@ -56,6 +41,23 @@ public class Board {
         return false;
     }
 
+    //returns true if there could be ship in this position.
+
+    public boolean viableShipShot(Ship ship){
+        if (inbounds(ship.getPosition()) && inbounds(ship.getEnd())){
+            Vector2d pos = ship.getPosition();
+            do {
+                if(boardState[pos.getX()][pos.getY()] == Tile.SHOT || boardState[pos.getX()][pos.getY()] == Tile.SHIPWRECK)
+                    return false;
+                pos = pos.add(ship.getDirection().toUnitVector());
+            } while (!pos.equals(ship.getEnd()));
+            return boardState[pos.getX()][pos.getY()] == Tile.SHOT_SHIP || boardState[pos.getX()][pos.getY()] == Tile.HIDDEN;
+        }
+        return false;
+    }
+
+    //tries to place given ship on board
+
     public void place(Ship ship){
         if(valiable(ship)) {
             ships.add(ship);
@@ -67,24 +69,48 @@ public class Board {
             boardState[pos.getX()][pos.getY()] = Tile.SHIP;
         }
         else
-            throw new IllegalArgumentException("ship is out of bounds or inersects with other one. pos: " + ship.getPosition() + " " + ship.getEnd() + " " + inbounds(ship.getPosition()) + " " + inbounds(ship.getEnd()));
+            throw new IllegalArgumentException("ship is out of bounds or inersects with other one. pos: ");
     }
+
+    //returns largest coordinates of map
 
     public int getWidth(){
         return upperRight.getX();
     }
 
+    //returns tile with given coordinates
+
     public Tile getTile(int x, int y){
-        if(x > getWidth() || x < 0 || y > getWidth() || y < 0)
+        if(!inbounds(new Vector2d(x,y)))
             throw new IllegalArgumentException("Coordinates are out of bounds.");
         return boardState[x][y];
     }
 
+    //returns tile at given position
+
+    public Tile getTile(Vector2d position){
+        if(!inbounds(position))
+            throw new IllegalArgumentException("Coordinates are out of bounds.");
+        return boardState[position.getX()][position.getY()];
+    }
+
+    //sets tile at given coordinates
+
     public void setTile(int x,int y, Tile tile){
-        if(x > getWidth() || x < 0 || y > getWidth() || y < 0)
+        if(!inbounds(new Vector2d(x,y)))
             throw new IllegalArgumentException("Coordinates are out of bounds.");
         boardState[x][y] = tile;
     }
+
+    //sets tile at given position
+
+    public void setTile(Vector2d position, Tile tile){
+        if(!inbounds(position))
+            throw new IllegalArgumentException("Coordinates are out of bounds.");
+        boardState[position.getX()][position.getY()] = tile;
+    }
+
+    //returns ship if there is one on given position
 
     public Ship getShip(Vector2d position){
         for(Ship ship : ships){
@@ -94,6 +120,8 @@ public class Board {
         return null;
     }
 
+    //updates destroyed ship - no need to check, it's only used by wrecked ships.
+
     public void update(Ship ship){
         Vector2d pos = ship.getPosition();
         do {
@@ -101,5 +129,11 @@ public class Board {
             pos = pos.add(ship.getDirection().toUnitVector());
         } while (!pos.equals(ship.getEnd()));
         boardState[pos.getX()][pos.getY()] = Tile.SHIPWRECK;
+    }
+
+    //returns true if player/AI can shoot given position
+
+    public boolean toShoot(Vector2d position){
+        return inbounds(position) && getTile(position) == Tile.HIDDEN;
     }
 }

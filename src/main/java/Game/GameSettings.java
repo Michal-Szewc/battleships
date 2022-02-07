@@ -1,5 +1,7 @@
 package Game;
 
+//Class that stores the settings of the game, has only setters and getters, but arguments to functions are more clear.
+
 public class GameSettings {
     private int mapWidth;
     private int turnLimit;
