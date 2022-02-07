@@ -121,12 +121,26 @@ public class App extends Application{
         addNumberField(0,7,"Points for destroyer", "2");
         addNumberField(0,8,"Difficulty level: 1 - easy, 2 - medium, 3 - hard", "2");
 
-        playerStartsCheck = new CheckBox("Player starts.");
+        playerStartsCheck = new CheckBox("Player starts");
         menuPane.add(playerStartsCheck,0,9);
 
         Button startButton = new Button("start");
         startButton.setOnAction(e -> prepareEditor());
         menuPane.add(startButton, 0, 10);
+
+        //constraint labels
+
+        Label label = new Label("Map size has to be between 5 and 50");
+        menuPane.add(label,0,11);
+
+        label = new Label("Turn limit has to be larger than 2");
+        menuPane.add(label,0,12);
+
+        label = new Label("points need to be between 1 and 100.");
+        menuPane.add(label,0,13);
+
+        label = new Label("Number os ships needs to be positive.");
+        menuPane.add(label,0,14);
 
         scene = new Scene(menuPane);
         primaryStage.setScene(scene);

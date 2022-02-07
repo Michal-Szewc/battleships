@@ -31,7 +31,7 @@ public class GameSettings {
 
     public void setTurnLimit(int turnLimit) {
         if(turnLimit < 5)
-            throw new IllegalArgumentException("Turn limit must be larger than 5.");
+            throw new IllegalArgumentException("Turn limit must be larger than 3.");
         this.turnLimit = turnLimit;
     }
 
@@ -55,7 +55,7 @@ public class GameSettings {
 
     public void setCruiserPoints(int cruiserPoints) {
         if(cruiserPoints <= 0 || cruiserPoints > 50)
-            throw new IllegalArgumentException("Points for cruiser must be between  1 and 50.");
+            throw new IllegalArgumentException("Points for cruiser must be between  1 and 100.");
         this.cruiserPoints = cruiserPoints;
     }
 
@@ -67,7 +67,7 @@ public class GameSettings {
 
     public void setDestroyerPoints(int destroyerPoints) {
         if(destroyerPoints <= 0 || destroyerPoints > 20)
-            throw new IllegalArgumentException("Points for destroyer must be between  1 and 20.");
+            throw new IllegalArgumentException("Points for destroyer must be between  1 and 100.");
         this.destroyerPoints = destroyerPoints;
     }
 
